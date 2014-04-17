@@ -81,6 +81,7 @@ describe('each', function() {
 
     _.each(animals, function(animal, key, object) {
       iterationInputs.push([animal, key, object]);
+      
     });
 
     expect(iterationInputs).to.eql([
