@@ -156,7 +156,7 @@ describe('reject', function() {
 describe('uniq', function() {
   it('should return all unique values contained in an unsorted array', function() {
     var list = [1, 2, 1, 3, 1, 4];
-
+    ///console.log(_.uniq(list))
     expect(_.uniq(list)).to.eql([1, 2, 3, 4]);
   });
 
@@ -243,6 +243,7 @@ describe('every', function() {
   });
 
   it('fails for a collection of all-falsy results', function() {
+   // console.log(_.every([null, 0, undefined], _.identity));
     expect(_.every([null, 0, undefined], _.identity)).to.equal(false);
   });
 
@@ -407,7 +408,10 @@ describe('defaults', function() {
     var to = {a: '', b: NaN};
     var from = {a: 1, b: 2};
     var defaulted = _.defaults(to, from);
-
+    //console.log(defaulted.a);
+    //console.log(defaulted.b);
+    //console.log(defaulted.me);
+    console.log(defaulted);
     expect(defaulted.a).to.equal('');
     expect(isNaN(defaulted.b)).to.equal(true);
   });

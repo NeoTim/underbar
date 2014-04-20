@@ -49,51 +49,22 @@ var _ = {};
 	//
 	// Note: _.each does not have a return value, but rather simply runs the
 	// iterator function over each item in the input collection.
-	/*_.each = function(collection, iterator) {
-			var each = function(array, cb){
-				for (var i = 0; i < array.length; i++) {
-					cb(array[i], i, array);
-				};
-			}
-			for (var i = 0; i < collection.length; i++) {
-				if(Array.isArray(collection[i])){
-					iterator(collection[i], i, collection);
-					//console.log("is Array")
-				} else if(collection[i].length){
-					//console.log("is an object")
-					//var array = [];
-					//for (var j = 0; j < collection[i][j].length; j++) {
-					//	array.push(collection[i][j]);
-					//};
-					//console.log(collection[i], i, collection);
-					iterator(collection[i], i, collection);
-					
-				} else {
-					//console.log("is not Array")
-					//console.log(collection[i], i, collection);
-					iterator(collection[i], i, collection);
-				}
-			};
-	};*/
 
 	_.each = function (collection, iterator, context) {
-	    	if (collection == null) iterator(collection);
-	    	//if (collection == null) return collection;
-	    	if (collection.length === +collection.length) {
-	      	for (var i = 0, length = collection.length; i < length; i++) {
-	        		//if (iterator.call(context, collection[i], i, collection) === breaker) return;
-	        		iterator(collection[i], i, collection);
-	     		}
-	    	} else {
-	      	var keys = _.keys(collection);
-	      	for (var i = 0, length = keys.length; i < length; i++) {
-	        		//if (iterator.call(context, collection[keys[i]], keys[i], collection) === breaker) return;
-	        		iterator(collection[keys[i]], keys[i], collection);
-	      	}
-	    }
-	    //console.log(collection)
-	    //return collection;
-	    //iterator(collection)
+		if(Array.isArray(collection)){
+		    	for (var i = 0; i < collection.length; i++) {
+		    		iterator(collection[i], i, collection)
+		    	};
+		} else {
+
+			// USE AND OBJECT FOR
+			for(var key in collection){
+				iterator(collection[key], key, collection)
+	    			//console.log(collection[key])
+			}
+		}
+	    
+	    
 	  } 
 
 	// Returns the index at which value can be found in the array, or -1 if value
@@ -137,7 +108,7 @@ var _ = {};
 	};
 
 	// Produce a duplicate-free version of the array.
-	_.uniq = function(collection, isSorted, cb, context) {
+	/*_.uniq = function(collection, isSorted, cb, context) {
 		if (collection == null) return [];
 	    	if (_.isFunction(isSorted)) {
 	      	context = cb;
@@ -157,7 +128,21 @@ var _ = {};
 	    	}
 	    	return result;
 
-	};
+	};*/
+	// Produce a duplicate-free version of the array.
+	_.uniq = function(collection, isSorted, cb){
+		// First I need to loop through each item in collection
+		var pass = [];
+		_.each(collection, function (item, index, array){
+			if(_.contains(collection, item)){
+				if(!_.contains(pass, item)){
+					pass.push(item);
+				}
+			}
+		});
+		return pass;
+	}
+
 
 
 	// Return the results of applying an iterator to each element.
@@ -192,7 +177,36 @@ var _ = {};
 
 	// Calls the method named by methodName on each value in the list.
 	// Note: you will nead to learn a bit about .apply to complete this.
-	_.invoke = function(collection, functionOrKey, args) {
+	_.invoke = function(collection, func, args) {
+		var list = [];
+		func || (func = _.identity);
+
+		if(func[func]){
+			//console.log(arguments)
+			
+			_.each(collection, function (item, index, array){
+				list.push(func[func].call(item));
+			});
+		} else {
+			//functionOrKey.apply(this);
+			_.each(collection, function (item, index, array){
+				list.push(func.call(item));
+			});
+		}
+		return list;
+
+		//args.call(arguments, 2);
+		//var isFunction = _.isFunction(functionOrKey);
+		//var isFunc = functionOrKey || (functionOrKey = _.identity);
+		//console.log(isFunc.apply("hello"))
+		//_.each(collection, function (item, index, array){
+			//console.log(functionOrKey(item))
+			//isFunc(item);
+		//isFunc.apply();
+		//});
+		/*var hello = _.map(collection, function (value){
+			return (isFunc ? functionOrKey : value[functionOrKey]).apply(value, args);
+		});*/
 	};
 
 	// Reduces an array or object to a single value by repetitively calling
@@ -237,16 +251,17 @@ var _ = {};
 
 
 	// Determine whether all of the elements match a truth test.
-	_.every = function(collection, iterator, context) {
+	_.every = function(collection, iterator) {
 		// TIP: Try re-using reduce() here.
 		iterator || (iterator = _.identity);
 		var result = true;
 		if ( collection == null ) return result;
-		_.each( collection, function(item, index, array){
-			if(!(result = result && iterator.call(context, item, index, array))) return breaker;	
-			/*} else if(!(result = false && !iterator.call(context, item, index, array))){
-				return;	
-			}*/
+		_.each( collection, function (item, index, array){
+			if(!(result = result && iterator.call(iterator, item, index, array))){
+				return true;
+			} else if((result = result && iterator.call(iterator, item, index, array))){
+				return false;
+			}
 		});
 		return !!result;
 	};
@@ -254,7 +269,30 @@ var _ = {};
 	// Determine whether any of the elements pass a truth test. If no iterator is
 	// provided, provide a default one
 	_.some = function(collection, iterator) {
+		//if(collection === []) { return false};
+		var result;
+		if(!collection[0]){
+			result = false;
+			//console.log(1);
+		} else if(_.every(collection, iterator || !_.every(collection, iterator))){			
+			result = true;
+			//console.log(3, _.every(collection, iterator));
+		} else if(!_.every(collection, iterator)){
+			result = false;
+			//console.log(4, _.every(collection, iterator));
+		} else {
+
+		}
+
+
+
+		
+		/*_.each(collection, function (item, index, array){
+
+		});*/
+
 		// TIP: There's a very clever way to re-use every() here.
+		return result;
 	};
 
 
@@ -277,11 +315,28 @@ var _ = {};
 	//     bla: "even more stuff"
 	//   }); // obj1 now contains key1, key2, key3 and bla
 	_.extend = function(obj) {
+		_.each(arguments, function (item, index){
+			for(var key in item){
+				obj[key] = item[key];
+			}
+		});
+		return obj;
 	};
 
 	// Like extend, but doesn't ever overwrite a key that already
 	// exists in obj
 	_.defaults = function(obj) {
+		//console.log(obj)
+		
+		_.each(arguments, function (item){
+			for(var key in item){
+				if(obj[key] === void 0){
+					obj[key] = item[key];
+				}
+			}
+		});
+
+    		return obj;
 	};
 
 
