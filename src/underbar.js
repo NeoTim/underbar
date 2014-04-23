@@ -179,22 +179,21 @@ var _ = {};
 	// Note: you will nead to learn a bit about .apply to complete this.
 	_.invoke = function(collection, func, args) {
 		var list = [];
-		func || (func = _.identity);
+
 
 		if(func[func]){
-			//console.log(arguments)
-			
 			_.each(collection, function (item, index, array){
-				list.push(func[func].call(item));
+				
+				list.push(func[func].apply(item));
 			});
 		} else {
-			//functionOrKey.apply(this);
 			_.each(collection, function (item, index, array){
-				list.push(func.call(item));
+				list.push(func.apply(item));
 			});
 		}
 		return list;
 
+	};
 		//args.call(arguments, 2);
 		//var isFunction = _.isFunction(functionOrKey);
 		//var isFunc = functionOrKey || (functionOrKey = _.identity);
@@ -207,7 +206,6 @@ var _ = {};
 		/*var hello = _.map(collection, function (value){
 			return (isFunc ? functionOrKey : value[functionOrKey]).apply(value, args);
 		});*/
-	};
 
 	// Reduces an array or object to a single value by repetitively calling
 	// iterator(previousValue, item) for each item. previousValue should be
@@ -269,31 +267,27 @@ var _ = {};
 	// Determine whether any of the elements pass a truth test. If no iterator is
 	// provided, provide a default one
 	_.some = function(collection, iterator) {
-		//if(collection === []) { return false};
-		var result;
-		if(!collection[0]){
-			result = false;
-			//console.log(1);
-		} else if(_.every(collection, iterator || !_.every(collection, iterator))){			
-			result = true;
-			//console.log(3, _.every(collection, iterator));
-		} else if(!_.every(collection, iterator)){
-			result = false;
-			//console.log(4, _.every(collection, iterator));
-		} else {
+		iterator || (iterator = _.identity);
 
-		}
+		var result = false;
 
+		_.each(collection, function (item, index, array){
+			if(iterator(item)){
+				result = true;
+			} else {
+				return false;
+			}
+		});
 
-
+		return result;
+	};
 		
 		/*_.each(collection, function (item, index, array){
 
 		});*/
 
+		
 		// TIP: There's a very clever way to re-use every() here.
-		return result;
-	};
 
 
 	/**
@@ -377,8 +371,33 @@ var _ = {};
 	// _.memoize should return a function that when called, will check if it has
 	// already computed the result for the given argument and return that value
 	// instead if possible.
-	_.memoize = function(func) {
-	};
+	
+/* 	_.each(arguments, function (arg, index){
+                		if(!storage[arg]){
+                			
+                    		storage[arguments] = func.apply(storage, arguments)
+                    	
+                		}
+                	});*/
+
+	_.memoize = function(func, context) {
+        	var storage = new Object();
+          	return function() {
+           		var args = [];
+
+			_.each(arguments, function (arg, index){
+				args.push(arg);
+			});
+
+			if(storage[args]){
+				return storage[args];
+			} else {
+	                 	storage[args] = func.apply(null, arguments);
+				
+			}
+			return storage[args];
+          	};
+    	};
 
 	// Delays a function for the given number of milliseconds, and then calls
 	// it with the arguments supplied.
@@ -387,6 +406,9 @@ var _ = {};
 	// parameter. For example _.delay(someFunction, 500, 'a', 'b') will
 	// call someFunction('a', 'b') after 500ms
 	_.delay = function(func, wait) {
+
+		var args = Array.prototype.slice.call(arguments , 2);
+		setTimeout(function(){func.apply(null, args);}, wait)		
 	};
 
 
@@ -401,6 +423,14 @@ var _ = {};
 	// input array. For a tip on how to make a copy of an array, see:
 	// http://mdn.io/Array.prototype.slice
 	_.shuffle = function(array) {
+
+		var newArray = Array.prototype.slice(array);
+		console.log(newArray)
+
+		
+		
+		
+		return newArray;
 	};
 
 
