@@ -53,19 +53,19 @@ var _ = {};
 	_.each = function (collection, iterator, context) {
 		if(Array.isArray(collection)){
 		    	for (var i = 0; i < collection.length; i++) {
-		    		iterator(collection[i], i, collection)
-		    	};
+		    		iterator(collection[i], i, collection);
+		    	}
 		} else {
 
 			// USE AND OBJECT FOR
 			for(var key in collection){
-				iterator(collection[key], key, collection)
+				iterator(collection[key], key, collection);
 	    			//console.log(collection[key])
 			}
 		}
 	    
 	    
-	  } 
+	  };
 
 	// Returns the index at which value can be found in the array, or -1 if value
 	// is not present in the array.
@@ -88,7 +88,7 @@ var _ = {};
 	_.filter = function(collection, cb, bool) {
 		var array = [];
 		var val = true;
-		if(bool == true){
+		if(bool === true){
 			val = false;
 		}
 		
@@ -96,7 +96,7 @@ var _ = {};
 			if(cb(collection[i]) === val){
 				array.push(collection[i]);
 			}
-		};
+		}
 		return array;
 	};
 
@@ -141,7 +141,7 @@ var _ = {};
 			}
 		});
 		return pass;
-	}
+	};
 
 
 
@@ -153,7 +153,7 @@ var _ = {};
 		var result = [];
 		for (var i = 0; i < collection.length; i++) {
 			result.push(iterator(collection[i], i, collection));
-		};
+		}
 		return result;
 	};
 
@@ -249,19 +249,38 @@ var _ = {};
 
 
 	// Determine whether all of the elements match a truth test.
+
+
+/*
+
+	_.every = function(collection, iterator) {
+	    // TIP: Try re-using reduce() here.
+	    iterator || (iterator = _.identity);
+	    var result = true;
+	    _.each(collection, function(item) {
+	      if(!iterator(item)){
+	        result = false;
+	      }
+	    });
+	    return result;
+	};
+
+
+*/
+
+
+
 	_.every = function(collection, iterator) {
 		// TIP: Try re-using reduce() here.
 		iterator || (iterator = _.identity);
 		var result = true;
-		if ( collection == null ) return result;
+		//if ( collection == null ) return result;
 		_.each( collection, function (item, index, array){
-			if(!(result = result && iterator.call(iterator, item, index, array))){
-				return true;
-			} else if((result = result && iterator.call(iterator, item, index, array))){
-				return false;
-			}
+			if(!iterator(item)){
+				result = false;
+			}			
 		});
-		return !!result;
+		return result;
 	};
 
 	// Determine whether any of the elements pass a truth test. If no iterator is
@@ -381,13 +400,15 @@ var _ = {};
                 	});*/
 
 	_.memoize = function(func, context) {
-        	var storage = new Object();
+        	var storage = {};
           	return function() {
            		var args = [];
 
 			_.each(arguments, function (arg, index){
 				args.push(arg);
 			});
+			storage[arguments] = "hello";
+			console.log(storage);
 
 			if(storage[args]){
 				return storage[args];
@@ -408,7 +429,7 @@ var _ = {};
 	_.delay = function(func, wait) {
 
 		var args = Array.prototype.slice.call(arguments , 2);
-		setTimeout(function(){func.apply(null, args);}, wait)		
+		setTimeout(function(){func.apply(null, args);}, wait);
 	};
 
 
@@ -425,7 +446,7 @@ var _ = {};
 	_.shuffle = function(array) {
 
 		var newArray = Array.prototype.slice(array);
-		console.log(newArray)
+		//console.log(newArray);
 
 		
 		
